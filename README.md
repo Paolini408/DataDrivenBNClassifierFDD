@@ -7,6 +7,8 @@
 4. [Modelli data-driven di Classificazione](#modelli-data-driven-di-classificazione)
 5. [Conclusioni](#conclusioni)
 
+---
+
 ## Introduzione al Caso Studio
 Questo progetto esplora il funzionamento di tre diversi modelli di classificazione basati su reti bayesiane applicati a un sistema HVAC sperimentale.
 Il sistema analizzato è un'UTA a volume d'aria costante a doppio ventilatore e singolo condotto.
