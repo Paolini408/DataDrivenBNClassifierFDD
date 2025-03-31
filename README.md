@@ -1,6 +1,5 @@
 # Analisi di un sistema HVAC sperimentale con Reti Bayesiane
 
----
 
 ## Introduzione al Caso Studio
 Questo progetto esplora il funzionamento di tre diversi modelli di classificazione basati su reti bayesiane applicati a un sistema HVAC sperimentale.
@@ -43,7 +42,7 @@ Questo modello utilizza una stima della densità a kernel per approssimare la di
 Un'estensione del modello Naive Bayes che introduce dipendenze tra i sintomi (variabili selezionate), migliorando la capacità di classificazione.
 Inoltre, grazie alla possibilità di definire un peso per ogni classe, il modello è in grado di gestire meglio situazioni di sbilanciamento.
 
-- Maggiori dettagli: [Discrete Bayesian Network](https://www.sciencedirect.com/science/article/pii/S0140700719301070), [Cost-sensitive Bayesian network classifiers](https://www.sciencedirect.com/science/article/pii/S0167865514001354)
+- Maggiori dettagli: [Discrete Bayesian Networks](https://www.sciencedirect.com/science/article/pii/S0140700719301070), [Cost-sensitive Bayesian network classifiers](https://www.sciencedirect.com/science/article/pii/S0167865514001354)
 
 ---
 
