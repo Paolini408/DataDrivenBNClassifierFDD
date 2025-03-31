@@ -1,5 +1,11 @@
-# Analisi di un sistema HVAC sperimentale con Reti Bayesiane
+# Analysis of an experimental HVAC system with fully data-driven Bayesian Networks
 
+## Indice
+1. [Introduzione al Caso Studio](#introduzione-al-caso-studio)
+2. [Descrizione del Dataset](#descrizione-del-dataset)
+3. [Selezione delle Variabili di Input](#selezione-delle-variabili-di-input)
+4. [Modelli data-driven di Classificazione](#modelli-data-driven-di-classificazione)
+5. [Conclusioni](#conclusioni)
 
 ## Introduzione al Caso Studio
 Questo progetto esplora il funzionamento di tre diversi modelli di classificazione basati su reti bayesiane applicati a un sistema HVAC sperimentale.
@@ -27,7 +33,7 @@ Il criterio utilizzato per scegliere le variabili più rilevanti è basato sull'
 
 ---
 
-## Modelli di Classificazione
+## Modelli data-driven di Classificazione
 Sono stati implementati tre diversi modelli di classificazione basati su reti bayesiane:
 
 ### 1) Conditional Gaussian Network (CGN)
@@ -50,5 +56,3 @@ Inoltre, grazie alla possibilità di definire un peso per ogni classe, il modell
 Questo progetto offre un'analisi delle prestazioni di diversi modelli di classificazione bayesiani data-driven applicati a un sistema HVAC.
 
 Per ulteriori dettagli, contatta il creatore Marco Paolini.
-
-
