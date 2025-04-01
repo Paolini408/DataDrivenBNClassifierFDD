@@ -50,21 +50,21 @@ Sono stati implementati tre diversi modelli di classificazione basati su reti ba
 
 ### 1) Conditional Gaussian Network (CGN)
 Si tratta di una rete bayesiana che modella le relazioni probabilistiche tra sintomi (variabili continue) utilizzando distribuzioni gaussiane condizionate per ogni etichetta.
-Grazie alla definizione del **parametro alpha**, il modello è in grado di ridurre il False Alarm Rate (FAR).
+Grazie alla definizione del parametro **alpha**, il modello è in grado di ridurre il False Alarm Rate (FAR).
 
 - Maggiori dettagli: [CGN classifier with probabilistic boundary](https://www.sciencedirect.com/science/article/pii/S1359431116310675)
 
 ### 2) Kernel Density Estimation (KDE)
 Questo modello utilizza una stima della densità a kernel per approssimare le distribuzioni di probabilità delle variabili continue e delineare le interconnessioni probabilistiche tra di esse per ciascuna etichetta, senza fare ipotesi parametriche.
-La struttura della rete è la stessa del modello CGN e grazie alla definizione del **parametro Lp**, il modello è in grado di ridurre il False Alarm Rate (FAR).
+La struttura della rete è la stessa del modello CGN e grazie alla definizione del parametro **Lp**, il modello è in grado di ridurre il False Alarm Rate (FAR).
 
 - Maggiori dettagli: [FDD using Interpolated Kernel Density Estimate](https://www.sciencedirect.com/science/article/pii/S0263224121002438)
 
 ### 3) Cost-Sensitive Tree Augmented Naive Bayesian Network (TAN)
 Un'estensione del modello Naive Bayes che introduce una struttura ad albero in grado di catturare le dipendenze tra i sintomi (variabili selezionate), migliorando la capacità di classificazione.
-Inoltre, grazie alla possibilità di definire una **cost list** (peso per ogni classe), il modello è in grado di gestire meglio situazioni di sbilanciamento e dare priorità a determinate etichette.
+Inoltre, grazie alla possibilità di definire una **cost list** (cioè un peso per ogni classe), il modello è in grado di gestire meglio situazioni di sbilanciamento e dare priorità a determinate etichette.
 
-- Maggiori dettagli: [Discrete Bayesian Networks](https://www.sciencedirect.com/science/article/pii/S0140700719301070), [Cost-sensitive Bayesian network classifiers](https://www.sciencedirect.com/science/article/pii/S0167865514001354)
+- Maggiori dettagli: [Discrete Bayesian Networks](https://www.sciencedirect.com/science/article/pii/S0140700719301070); [Cost-sensitive Bayesian network classifiers](https://www.sciencedirect.com/science/article/pii/S0167865514001354)
 
 ---
 
