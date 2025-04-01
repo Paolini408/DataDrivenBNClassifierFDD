@@ -8,10 +8,12 @@ if __name__ == "__main__":
     df = pd.read_csv(path)
 
     sorted_labels = sorted(df['label'].unique())
-    n_input_features = 10  # Number of input features to be selected
+    print(sorted_labels)
+
+    n_input_features = 10  # Number of input features to be selected (based on availability and complexity)
 
     ### CGN ###
-    alpha = 0.99  # Lower alpha means lower False Alarm Rate
+    alpha = 0.99  # Lower alpha means lower False Alarm Rate (0 < alpha < 1)
     X_columns_cgn = features_selection_continuous(df, n_input_features)
     lista_col_cgn = X_columns_cgn.columns.tolist()
     y_test, y_pred = cgn_classifier(df, lista_col_cgn, sorted_labels, alpha)
@@ -19,7 +21,7 @@ if __name__ == "__main__":
     plot_precision_and_recall(precision, recall, sorted_labels, 'CGN')
 
     ### KDE ###
-    Lp = 2.5 * (10 ** -3)  # Lower Lp means lower False Alarm Rate
+    Lp = 2.5 * (10 ** -3)  # Lower Lp means lower False Alarm Rate (0 < Lp < +inf)
     X_columns_kde = features_selection_continuous(df, n_input_features)
     lista_col_kde = X_columns_kde.columns.tolist()
     y_test, y_pred = kde_classifier(df, lista_col_kde, sorted_labels, Lp)
@@ -28,8 +30,8 @@ if __name__ == "__main__":
 
     ### TAN ###
     max_bins = 5  # Maximum number of bins for discretization
-    cost_ratio_list = [1] * (len(sorted_labels) - 1)  # All Fault costs are the same
-    cost_ratio_list.append(1)  # Normal cost is the last one and can (should) be higher than the others
+    cost_ratio_list = [1] * (len(sorted_labels) - 1)  # In this case, all Fault costs are the same
+    cost_ratio_list.append(1)  # Normal cost is the last one and can (should) be higher than the others to reduce FAR
     X_columns_tan = features_selection_discrete_entropy(df, max_bins, n_input_features)
     lista_col_tan = X_columns_tan.columns.tolist()
     y_test, y_pred = tan_classifier(X_columns_tan, df['label'], lista_col_tan, sorted_labels, cost_ratio_list)

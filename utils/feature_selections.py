@@ -5,31 +5,15 @@ from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.feature_selection import mutual_info_classif
 
 
-def features_selection_discrete(df, n_bins, n_features):
-    X = df.loc[:, df.columns != 'label']
-    X = X.drop(['HUM_state', 'CC_state', 'PostHC_state', 'T_F_out_CC', 'T_F_in_CC', 'T_F_out_PostHC', 'T_F_in_PostHC',
-                'V_F_in_CC', 'V_F_in_PostHC'], axis=1)  # Remove categorical features (states) and redundant features
-    Y = df['label']
-
-    discretizer = KBinsDiscretizer(n_bins=n_bins, encode='ordinal', strategy='uniform')  # Equal width
-    X_bins = discretizer.fit_transform(X)
-    X_discrete = pd.DataFrame(X_bins, columns=X.columns)
-    mi_scores = mutual_info_classif(X_discrete, Y)
-    mi_scores_df = pd.DataFrame({'Feature': X_discrete.columns, 'MI Score': mi_scores})
-    mi_scores_sorted = mi_scores_df.sort_values(by='MI Score', ascending=False).reset_index(drop=True)
-    selected_features = mi_scores_sorted.iloc[:n_features]['Feature'].tolist()
-    X_selected_disc = X_discrete[selected_features]
-    return X_selected_disc
-
-
+### CONTINUOUS DISCRETIZATION ###
 def features_selection_continuous(df, n_features):
     X = df.loc[:, df.columns != 'label']
+    # Remove categorical features (states) and redundant features (use heating and cooling coil power instead)
     X = X.drop(['HUM_state', 'CC_state', 'PostHC_state', 'T_F_out_CC', 'T_F_in_CC', 'T_F_out_PostHC', 'T_F_in_PostHC',
-                'V_F_in_CC', 'V_F_in_PostHC'], axis=1)  # Remove categorical features (states) and redundant features
+                'V_F_in_CC', 'V_F_in_PostHC'], axis=1)
     Y = df['label']
-
     n_bins = 100000  # High number of bins to consider continuous features
-    discretizer = KBinsDiscretizer(n_bins=n_bins, encode='ordinal', strategy='uniform')  # Equal width
+    discretizer = KBinsDiscretizer(n_bins=n_bins, encode='ordinal', strategy='uniform')
     X_bins = discretizer.fit_transform(X)
     X_discrete = pd.DataFrame(X_bins, columns=X.columns)
     mi_scores = mutual_info_classif(X_discrete, Y)
@@ -40,6 +24,25 @@ def features_selection_continuous(df, n_features):
     return X_selected_cont
 
 
+### EQUAL WIDTH DISCRETIZATION ###
+def features_selection_discrete(df, n_bins, n_features):
+    X = df.loc[:, df.columns != 'label']
+    # Remove categorical features (states) and redundant features (use heating and cooling coil power instead)
+    X = X.drop(['HUM_state', 'CC_state', 'PostHC_state', 'T_F_out_CC', 'T_F_in_CC', 'T_F_out_PostHC', 'T_F_in_PostHC',
+                'V_F_in_CC', 'V_F_in_PostHC'], axis=1)
+    Y = df['label']
+    discretizer = KBinsDiscretizer(n_bins=n_bins, encode='ordinal', strategy='uniform')
+    X_bins = discretizer.fit_transform(X)
+    X_discrete = pd.DataFrame(X_bins, columns=X.columns)
+    mi_scores = mutual_info_classif(X_discrete, Y)
+    mi_scores_df = pd.DataFrame({'Feature': X_discrete.columns, 'MI Score': mi_scores})
+    mi_scores_sorted = mi_scores_df.sort_values(by='MI Score', ascending=False).reset_index(drop=True)
+    selected_features = mi_scores_sorted.iloc[:n_features]['Feature'].tolist()
+    X_selected_disc = X_discrete[selected_features]
+    return X_selected_disc
+
+
+### ENTROPY DISCRETIZATION ###
 def calculate_entropy(y):
     _, counts = np.unique(y, return_counts=True)
     probabilities = counts / len(y)
@@ -97,10 +100,10 @@ def obtain_X_entropy_disc(x_train, y_train, n_bins_max):
 
 def features_selection_discrete_entropy(df, n_bins_max, n_features):
     X = df.loc[:, df.columns != 'label']
+    # Remove categorical features (states) and redundant features (use heating and cooling coil power instead)
     X = X.drop(['HUM_state', 'CC_state', 'PostHC_state', 'T_F_out_CC', 'T_F_in_CC', 'T_F_out_PostHC', 'T_F_in_PostHC',
-                'V_F_in_CC', 'V_F_in_PostHC'], axis=1)  # Remove categorical features (states) and redundant features
+                'V_F_in_CC', 'V_F_in_PostHC'], axis=1)
     Y = df['label']
-
     X_discrete = obtain_X_entropy_disc(X, Y, n_bins_max)
     mi_scores = mutual_info_classif(X_discrete, Y)
     mi_scores_df = pd.DataFrame({'Feature': X_discrete.columns, 'MI Score': mi_scores})

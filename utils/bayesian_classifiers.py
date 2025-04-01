@@ -10,9 +10,10 @@ from sklearn.metrics import mutual_info_score
 import networkx as nx
 
 
+### CONDITIONAL GAUSSIAN NETWORK (CGN) ###
 def cgn_classifier(dataframe, var_list, lab_sorted, alpha_value):
     """
-    Performs classification using a Conditional Gaussian Naive Bayes (CGN) approach.
+    Performs classification using a Conditional Gaussian Network (CGN) approach.
 
     Args:
     - dataframe (DataFrame): The pandas DataFrame containing the dataset.
@@ -52,7 +53,7 @@ def cgn_classifier(dataframe, var_list, lab_sorted, alpha_value):
         prior_probs[class_label] = prior_p
         # Prior probabilities can also be evaluated based on historical experience and domain expertise
 
-    alpha = alpha_value  # Set in advance according to the user's tolerance (significance level)
+    alpha = alpha_value  # Set in advance according to the user's tolerance in order to reduce FAR
     N = label_train_sizes['Normal']
     m = n_features_CGN
     F = f.ppf(1 - alpha, m, N - m)
@@ -98,11 +99,10 @@ def cgn_classifier(dataframe, var_list, lab_sorted, alpha_value):
         else:
             y_pred.append(max(p_Ci_x_p_s_Ci_dict, key=p_Ci_x_p_s_Ci_dict.get))
 
-        # y_pred.append(max(p_Ci_x_p_s_Ci_dict, key=p_Ci_x_p_s_Ci_dict.get))
-
     return y_test, y_pred
 
 
+### KERNEL DENSITY ESTIMATION (KDE) ###
 def kde_classifier(dataframe, var_list, lab_sorted, Lp_value):
     """
     Performs classification using a KDE-BN approach.
@@ -111,7 +111,7 @@ def kde_classifier(dataframe, var_list, lab_sorted, Lp_value):
     - dataframe (DataFrame): The pandas DataFrame containing the dataset.
     - var_list (list): A list of feature variables to be used for classification.
     - lab_sorted (list): A sorted list of unique class labels in the dataset.
-    - Lp (float): Treshold to identify Normal class.
+    - Lp (float): Treshold value to identify Normal class (reducing FAR).
 
     Returns:
     - y_test (list): True class labels for the test data.
@@ -132,7 +132,7 @@ def kde_classifier(dataframe, var_list, lab_sorted, Lp_value):
         prior_p = (x_train[y_train == class_label].shape[0] + 1) / (len(y_train) + nc)
         prior_probs[class_label] = prior_p
 
-    bandwidth = np.linspace(0.1, 2.0, 10)  # Hyperparameter of KDE
+    bandwidth = np.linspace(0.1, 2.0, 10)  # Hyperparameter of KDE is optimized automatically
     kde_models = {}
     best_bandwidth = {}
     for label in lab_sorted:
@@ -155,7 +155,7 @@ def kde_classifier(dataframe, var_list, lab_sorted, Lp_value):
     # print(prob_df)
 
     y_pred = []
-    Lp = Lp_value
+    Lp = Lp_value  # Set in advance according to the user's tolerance in order to reduce FAR
     wn_index = lab_sorted.index('Normal')
     for index, row_test_data in prob_df.iterrows():
         prodotto = {}
@@ -169,6 +169,7 @@ def kde_classifier(dataframe, var_list, lab_sorted, Lp_value):
     return y_test, y_pred
 
 
+### COST-SENSITIVE TREE-AUGMENTED NAIVE BAYES (TAN) ###
 def obtain_weighted_cost_list(df_train, cost_ratio_list):
     """
     Obtain the weighted cost for each class label.
@@ -253,7 +254,7 @@ def prior_probs(sorted_labels, df_train, x_train, y_train, cost_ratio_list):
 
 def root_node_prob(df_train, features, cost_ratio_list, sorted_labels, root_node=None):
     """
-    Compute the conditional probability table (CPT) for the root nodes.
+    Compute the conditional probability table (CPT) for the root node.
     """
     weight = obtain_weighted_cost_list(df_train, cost_ratio_list)
     root_node = root_node if root_node else features[0]
@@ -284,7 +285,7 @@ def get_parents_for_all_nodes(dag, root_node, label_col):
 
 def create_cpt_for_node(df_train, node, parents, label_col, cost_ratio_list):
     """
-    Create a Conditional Probability Table (CPT) for a given node in the TAN structure.
+    Create a Conditional Probability Table (CPT) for a given node (parent and child) in the TAN structure.
     """
     cost_ratios = obtain_weighted_cost_list(df_train, cost_ratio_list)
     node_values = sorted(df_train[node].unique())
@@ -323,7 +324,7 @@ def create_cpt_for_node(df_train, node, parents, label_col, cost_ratio_list):
 
 def create_all_feature_cpts(df_train, dag, label_col, cost_ratio_list, root_node):
     """
-    Create Conditional Probability Tables (CPTs) for all feature nodes in the TAN structure.
+    Create Conditional Probability Tables (CPTs) for all nodes in the TAN structure.
     """
     cpts = {}
     node_parents = get_parents_for_all_nodes(dag, root_node, label_col)
@@ -350,9 +351,9 @@ def lookup_CS_cpd_value(cpt, feature_value, label_value, other_parent_value=None
         return cpt.loc[feature_value, (label_value, other_parent_value)]
 
 
-def CS_TAN_results(df_test, dag, prior_cpt, root_cpt, cpts, sorted_labels, root_node):
+def CS_TAN_prediction(df_test, dag, prior_cpt, root_cpt, cpts, sorted_labels, root_node):
     """
-    Perform classification using the Tree-Augmented Naive Bayes (TAN) model.
+    Perform prediction of the class using the Cost-Sensitive Tree-Augmented Naive Bayes model.
     """
     y_pred = []
     for _, row in df_test.iterrows():
@@ -375,16 +376,17 @@ def CS_TAN_results(df_test, dag, prior_cpt, root_cpt, cpts, sorted_labels, root_
 
 def tan_classifier(X, Y, lista_col, sorted_labels, cost_ratio_list):
     """
-    Perform classification using the Cost-Sensitive TAN model.
+    Perform classification using the Cost-Sensitive Tree-Augmented Naive Bayes model.
 
     Args:
-    - X (DataFrame): The pandas DataFrame containing the features.
+    - X (DataFrame): The pandas DataFrame containing the input features.
     - Y (Series): The pandas Series containing the class labels.
     - lista_col (list): A list of feature variables (from X) to be used for classification.
     - sorted_labels (list): A sorted list of unique class labels in the dataset.
-    - cost_ratio_list (list): A list of cost ratios for each class label.
+    - cost_ratio_list (list): A list of mis-classification cost for each class label. Higher is the cost for a defined class, higher is the priority of the model to classify that class.
 
     Returns:
+    - Tree Structure (Graph): The constructed network for TAN.
     - y_test (list): True class labels for the test data.
     - y_pred (list): Predicted class labels for the test data.
     """
@@ -401,12 +403,15 @@ def tan_classifier(X, Y, lista_col, sorted_labels, cost_ratio_list):
     CS_TAN_model = construct_TAN_weighted(df_train, lista_col, 'label', cost_ratio_list)
     pos = nx.circular_layout(CS_TAN_model)
     nx.draw(CS_TAN_model, pos, with_labels=True)
-    plt.show()
+    plt.show()  # Display the TAN structure to the user
 
     prior_p = prior_probs(sorted_labels, df_train, x_train, y_train, cost_ratio_list)
+    # print(prior_p)
     root_p = root_node_prob(df_train, lista_col, cost_ratio_list, sorted_labels)
+    # print(root_p)
     others_p = create_all_feature_cpts(df_train, CS_TAN_model, 'label', cost_ratio_list, lista_col[0])
+    # print(others_p)
 
-    y_pred = CS_TAN_results(df_test, CS_TAN_model, prior_p, root_p, others_p, sorted_labels, lista_col[0])
+    y_pred = CS_TAN_prediction(df_test, CS_TAN_model, prior_p, root_p, others_p, sorted_labels, lista_col[0])
 
     return y_test, y_pred

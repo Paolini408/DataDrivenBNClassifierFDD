@@ -8,7 +8,7 @@ def compute_far(conf_matrix_df):
     row_sum_without_N = conf_matrix_df.loc['Normal', :].sum() - conf_matrix_df.loc['Normal', 'Normal']
     row_sum_total = conf_matrix_df.loc['Normal', :].sum()
     rapporto = row_sum_without_N / row_sum_total
-    false_alarm_rate = rapporto*100
+    false_alarm_rate = rapporto * 100
     return false_alarm_rate
 
 
@@ -49,7 +49,7 @@ def print_performance_and_compute_precision_and_recall(y_test, y_pred, lab_sorte
     print(f"False Negative Rate - {classifier}:", fnr, '%')
 
     mdr = compute_mdr(conf_matrix_df)
-    print(f"Misdiagnosis Rate - {classifier}:", mdr, '%')
+    print(f"Mis-Diagnosis Rate - {classifier}:", mdr, '%')
 
     precision = precision_score(y_test, y_pred, average=None, labels=lab_sorted)
     print(f"\nPrecision per class - {classifier}:")
@@ -60,29 +60,22 @@ def print_performance_and_compute_precision_and_recall(y_test, y_pred, lab_sorte
     print(f"\nRecall per class - {classifier}:")
     for i, class_name in enumerate(lab_sorted):
         print(f"{class_name}: {recall[i]}")
+
     return precision, recall
 
 
 def plot_precision_and_recall(precision, recall, lab_sorted, classifier):
-    """
-    Plots precision and recall scores for each class label.
-
-    Args:
-    - precision_CGN (list): Precision scores for each class label.
-    - recall_CGN (list): Recall scores for each class label.
-    - lab_sorted (list): A sorted list of unique class labels in the dataset.
-    - classifier (string): Type of Bayesian classifier.
-    """
     fig, ax = plt.subplots(1, 1, figsize=(9, 7))
     bar_width = 0.14
     index = np.arange(len(lab_sorted))
-    ax.bar(index, precision * 100, bar_width, label='Precision', color='orange')
-    ax.bar(index + bar_width, recall * 100, bar_width, label='Recall', color='royalblue')
+    ax.bar(index, precision * 100, bar_width, label='Precision', color='orange', edgecolor='black')
+    ax.bar(index + bar_width, recall * 100, bar_width, label='Recall', color='royalblue', edgecolor='black')
     ax.set_title(f'Precision [%] and Recall [%] of {classifier}', fontweight='bold', fontsize=12)
     ax.set_xticks(index + bar_width / 2)
-    ax.set_xticklabels(lab_sorted, rotation=20)
+    ax.set_xticklabels(lab_sorted, rotation=25)
     ax.set_ylim(0, 110)
     ax.legend(ncols=2, loc='upper center')
     ax.grid(linewidth=0.3)
     plt.tight_layout()
+    plt.savefig(f'figs/{classifier}_precision_recall.png', dpi=300, bbox_inches='tight')
     plt.show()
