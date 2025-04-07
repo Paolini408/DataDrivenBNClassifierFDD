@@ -27,6 +27,8 @@ Il layout dell'impianto, le variabili monitorate e le logiche di controllo del s
 
 ![AHU Layout](figs/AHU_layout.png)
 
+- Maggiori dettagli: [Informazioni specifiche AHU del SENS i-Lab](https://www.sciencedirect.com/science/article/pii/S0378778822006636)
+
 ---
 
 ## Descrizione del dataset
