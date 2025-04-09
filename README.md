@@ -3,11 +3,11 @@
 ## Indice
 1. [Introduzione](#introduzione)
 2. [Descrizione del caso studio](#descrizione-del-caso-studio)
-2. [Descrizione del dataset](#descrizione-del-dataset)
-3. [Selezione delle variabili di input](#selezione-delle-variabili-di-input)
-4. [Modelli data-driven di classificazione](#modelli-data-driven-di-classificazione)
-5. [Performance metrics](#performance-metrics)
-6. [Conclusioni](#conclusioni)
+3. [Descrizione del dataset](#descrizione-del-dataset)
+4. [Selezione delle variabili di input](#selezione-delle-variabili-di-input)
+5. [Modelli data-driven di classificazione](#modelli-data-driven-di-classificazione)
+6. [Performance metrics](#performance-metrics)
+7. [Conclusioni](#conclusioni)
 
 ---
 
