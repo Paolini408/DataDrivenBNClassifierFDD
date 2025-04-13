@@ -15,7 +15,7 @@
 Questo progetto esplora il funzionamento di tre diversi modelli data-driven di classificazione basati su reti bayesiane applicati ad un sistema HVAC sperimentale.
 
 L'obiettivo principale è quello di testare algoritmi bayesiani più complicati e performanti rispetto al modello Gaussian Naive Bayes, in cui si assume l'indipendenza tra le variabili (sintomi) e la struttura della rete risulta quindi abbastanza banale.
-Il modello Gaussian Naive Bayes può essere sviluppato e valutato in modo semplice e veloce utilizzando la libreria scikit-learn.
+Il modello Gaussian Naive Bayes può essere sviluppato e valutato in modo semplice e veloce utilizzando la libreria [scikit-learn.](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html)
 
 ---
 
@@ -48,7 +48,8 @@ In particolare:
 ---
 
 ## Modelli data-driven di classificazione
-Sono stati implementati tre diversi modelli di classificazione basati su reti bayesiane:
+Sono stati implementati tre diversi modelli di classificazione basati su reti bayesiane.
+I primi due risultano essere modelli continui, mentre il terzo è un modello discreto. Nello specifico:
 
 ### 1) Conditional Gaussian Network (CGN)
 Si tratta di una rete bayesiana che modella le relazioni probabilistiche tra sintomi (variabili continue) utilizzando distribuzioni gaussiane condizionate per ogni etichetta.
